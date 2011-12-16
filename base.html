@@ -1,0 +1,291 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <title>White Star Balloon</title>
+
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="viewport" content="width=980">
+
+  <!-- HTML5 shim, for IE 6-8 support of HTML elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <!-- Rather use `less.js` to dynamically compile your `stylesheet/less` files? -->
+  <!--<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.1.3/less-1.1.3.min.js"></script>
+  <script>window.less || document.write('<script src="/static/js/libs/less-1.1.3.min.js">\x3C/script>')</script>-->
+
+  <!-- Need Modernizr? Uncomment the following script. -->
+  <!-- <script src="/static/js/libs/modernizr-2.0.6.js"></script> -->
+  <script src="https://www.google.com/jsapi?key=ABQIAAAAUXqfG7_JMbw-xVvKNZLljxRi_j0U6kJrkFvY4-OX2XYmEAa76BTNVvjZCgr4USlXBDx2pbz0rlBfzA" type="text/javascript"></script>
+  <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
+  <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+  <!--<script type="text/javascript" src="http://white-star-static-public.s3-website-us-east-1.amazonaws.com/js/OpenLayers.js"></script>-->
+  <script type="text/javascript" src="lib/OpenLayers.js"></script>
+  <script type="text/javascript" src="http://white-star-static-public.s3-website-us-east-1.amazonaws.com/js/highstock.src.js"></script>
+
+  <script type="text/javascript" src="http://white-star-static-public.s3-website-us-east-1.amazonaws.com/js/gauge.min.js"></script>
+  <script type="text/javascript" src="http://white-star-static-public.s3-website-us-east-1.amazonaws.com/js/jquery.livetwitter.min.js"></script>
+  <script type="text/javascript" src="http://white-star-static-public.s3-website-us-east-1.amazonaws.com/js/jquery.gauge.min.js"></script>
+
+  <script type="text/javascript" src="js/jquery.doomTweaks.js"></script>
+
+  <script type="text/javascript" src="js/wsbdata.js"></script>
+  <script type="text/javascript" src="js/wsbparse.js"></script>
+  <script type="text/javascript" src="js/wsbgraphs.js"></script>
+  <script type="text/javascript" src="js/wsbgauges.js"></script>
+
+  <script type="text/javascript">
+  $(document).ready(function () {
+    Wsbdata.initCharts();
+    Wsbdata.Wsbgraphs.setHighchartsOptions();
+
+    Wsbdata.Wsbgauges.initGauges();
+
+    $("#tweets").liveTwitter('lvl1whitestar', 
+      {mode: 'user_timeline', limit: 1, rate: 60000});
+
+  });
+  </script>
+  <script type="text/javascript">
+    var map, layer, vector, id, style_green, balloon_track, xml, format, points, selectControl;
+
+    function init(){
+        map = new OpenLayers.Map('map', Wsbdata.mapOptions());
+        layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
+        map.addLayer(layer);
+
+        map.setCenter(
+                new OpenLayers.LonLat(-84.715576171875, 38.042907714842).transform(
+                    new OpenLayers.Projection("EPSG:4326"),
+                    map.getProjectionObject()
+                ), 8
+            );
+
+        style_green = {
+          strokeColor: "#FFFF00",
+          strokeWidth: 4,
+          strokeDashstyle: "solid",
+        };
+
+        OpenLayers.Request.GET({
+          url: Wsbdata.settings.initialData,
+          success: Wsbdata.loadInitialData
+        })
+
+        points = new OpenLayers.Layer.Vector("Points", {
+          'sphericalMercator': true,
+          numZoomLevels: 16,  
+          minResolution: 0,
+          maxResolution: 2000,
+          styleMap: new OpenLayers.StyleMap({
+                    "default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({
+                        externalGraphic: "img/marker-green.png",
+                        graphicOpacity: 1,
+                        pointRadius: 10
+                    }, OpenLayers.Feature.Vector.style["default"])),
+                    "select": new OpenLayers.Style({
+                        externalGraphic: "img/marker-blue.png"
+                    })
+                })
+        });
+
+        vector = new OpenLayers.Layer.Vector("GPX", {
+                'sphericalMercator': true,
+                style: style_green
+            });
+
+        map.addLayer(vector);
+        map.addLayer(points);
+
+        var id = setInterval(refreshGPX, 1000);
+
+    }
+
+    function refreshGPX() {
+      
+      //vector.refresh();
+      
+    }
+  </script>
+
+
+</head>
+
+<body onload="init()">
+
+  <header>
+    <div class="topbar">
+      <div class="fill">
+        <div class="container">
+
+          <a href="/" class="brand">White Star Balloon Public Tracking</a>
+
+          <ul class="secondary-nav">
+            <li>
+              <a href="/about/">About</a>
+            </li>
+
+
+              <li class="menu dropdown" data-dropdown="dropdown">
+                <a href="#" class="menu">Dropdown</a>
+                <ul class="menu-dropdown span5">
+                  <li>
+                    <a href="#">Lorem</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="#">Ipsum</a>
+                  </li>
+                </ul>
+              </li>
+
+          </ul>
+
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+    <div class="container">
+      <div class="content">
+        <div class="row tweets" style="margin-bottom: 10px">
+          <div class="span1">
+            <p style="margin-bottom: 0px">Tweets:</p>
+          </div>
+          <div class="span14">
+            <div id="tweets"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span12">
+            <div id="map" class="smallmap"></div> 
+          </div>
+          <div class="span4">
+            <div class="row">
+              <div class="span2">
+                <canvas id="altitudeGauge" width="100" height="100"></canvas>
+              </div>
+              <div class="span2">
+                <canvas id="externalTempGauge" width="100" height="100"></canvas>
+              </div>
+            </div>
+            <div class="row">
+              <div class="span2">
+                <canvas id="groundSpeedGauge" width="100" height="100"></canvas>
+              </div>
+              <div class="span2">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span8">
+            <div id="altitudeChart"></div>
+          </div>
+          <div class="span8">
+            <button id="testAdd">Test add a point!</button>
+            <div id="tempChart" style=""></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span8">
+            <div id="pressureChart"></div>
+          </div>
+          <div class="span8">
+            <div id="humidityChart"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span8">
+            <div id="cloudChart"></div>
+          </div>
+          <div class="span8">
+            <div id="speedChart"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span8">
+            <div id="vspeedChart"></div>
+          </div>
+          <div class="span8"></div>
+        </div>
+        
+         
+      </div>
+    </div>
+   
+
+  <footer>
+    
+  </footer>
+
+
+  <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
+<script type="text/javascript">
+  $("#testAdd").click(function(){
+    Wsbdata.charts[0].addPoint('internal', new Date().getTime(), Math.random());
+  });
+</script>
+  
+  <!-- Additional JavaScript libraries and plugins... -->
+  <script src="js/libs/bootstrap-dropdown.js"></script>
+
+  <div pub-key="pub-181475f9-5238-44c4-a650-3f6f643f6818" sub-key="sub-15a52566-268b-11e1-acc2-091dbd14012a" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+  <script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
+  <script>(function(){
+
+      // LISTEN FOR MESSAGES
+      PUBNUB.subscribe({
+          channel  : "hello_world",      // CONNECT TO THIS CHANNEL.
+          error    : function() {        // LOST CONNECTION (auto reconnects)
+              alert("Connection Lost. Will auto-reconnect when Online.")
+          },
+          callback : function(message) { // RECEIVED A MESSAGE.
+              alert(message)
+          },
+          connect  : function() {        // CONNECTION ESTABLISHED.
+          }
+      })
+
+  })();</script>
+
+
+  <!-- mathiasbynens.be/notes/async-analytics-snippet Change UA-XXXXX-X to be your site's ID -->
+  <script>
+    var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-27721632-1']);
+  _gaq.push(['_setDomainName', 'whitestarballoon.com']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+    //g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    g.src = "http://www.google-analytics.com/ga.js";
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+
+
+  <!-- Prompt IE 6-7 users to install Chrome Frame.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lte IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+  <![endif]-->
+
+</body>
+</html>
