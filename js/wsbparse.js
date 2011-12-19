@@ -74,6 +74,15 @@ Wsbdata.Wsbparse = {
         }
         rv += "</div>";
         return rv;
+    },
+
+    parseGPXString: function(GPX, features) {
+        var parse, newData, GPXFeatures;
+        parser = new DOMParser();
+        newData = parser.parseFromString(GPX, "text/xml");
+        GPXFeatures = Wsbdata.Wsbparse.transformFeatures(newData);
+
+        
     }
 
 };
