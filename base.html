@@ -42,6 +42,7 @@
   <script type="text/javascript" src="js/jquery.doomTweaks.js"></script>
 
   <script type="text/javascript" src="js/wsbdata.js"></script>
+  <script type="text/javascript" src="js/wsbmaps.js"></script>
   <script type="text/javascript" src="js/wsbparse.js"></script>
   <script type="text/javascript" src="js/wsbgraphs.js"></script>
   <script type="text/javascript" src="js/wsbgauges.js"></script>
@@ -58,72 +59,10 @@
 
   });
   </script>
-  <script type="text/javascript">
-    var map, layer, vector, id, style_green, balloon_track, xml, format, points, selectControl;
-
-    function init(){
-        map = new OpenLayers.Map('map', Wsbdata.mapOptions());
-        layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
-        map.addLayer(layer);
-
-        map.setCenter(
-                new OpenLayers.LonLat(-84.715576171875, 38.042907714842).transform(
-                    new OpenLayers.Projection("EPSG:4326"),
-                    map.getProjectionObject()
-                ), 8
-            );
-
-        style_green = {
-          strokeColor: "#FFFF00",
-          strokeWidth: 4,
-          strokeDashstyle: "solid",
-        };
-
-        OpenLayers.Request.GET({
-          url: Wsbdata.settings.initialData,
-          success: Wsbdata.loadInitialData
-        })
-
-        points = new OpenLayers.Layer.Vector("Points", {
-          'sphericalMercator': true,
-          numZoomLevels: 16,  
-          minResolution: 0,
-          maxResolution: 2000,
-          styleMap: new OpenLayers.StyleMap({
-                    "default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({
-                        externalGraphic: "img/marker-green.png",
-                        graphicOpacity: 1,
-                        pointRadius: 10
-                    }, OpenLayers.Feature.Vector.style["default"])),
-                    "select": new OpenLayers.Style({
-                        externalGraphic: "img/marker-blue.png"
-                    })
-                })
-        });
-
-        vector = new OpenLayers.Layer.Vector("GPX", {
-                'sphericalMercator': true,
-                style: style_green
-            });
-
-        map.addLayer(vector);
-        map.addLayer(points);
-
-        var id = setInterval(refreshGPX, 1000);
-
-    }
-
-    function refreshGPX() {
-      
-      //vector.refresh();
-      
-    }
-  </script>
-
 
 </head>
 
-<body onload="init()">
+<body onload="Wsbdata.maps.init()">
 
   <header>
     <div class="topbar">

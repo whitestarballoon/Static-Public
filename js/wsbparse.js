@@ -61,16 +61,19 @@ Wsbdata.Wsbparse = {
         var features = Wsbdata.format.read(xmlDom);
         var pointFeatures = features[0].geometry.getVertices();
         for(i = 0; i < pointFeatures.length; i++) {
-            pointFeatures[i].transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+            //TODO: Fix this.
+            pointFeatures[i].transform(new OpenLayers.Projection("EPSG:4326"), Wsbdata.maps.map.getProjectionObject());
         }
         return features;
     },
 
     getPopoverDiv: function(attribute) {
-        var return = "<div style='font-size:.8em'>";
+        var rv = "<div style='font-size:.8em'>";
         for (var i = 0; i < attribute.length; i++) {
-
+            
         }
+        rv += "</div>";
+        return rv;
     }
 
 };

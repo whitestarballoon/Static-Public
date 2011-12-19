@@ -62,28 +62,17 @@ var Wsbdata = {
 
         var features = Wsbdata.Wsbparse.transformFeatures(Wsbdata.xml);
         
-	    vector.addFeatures(features);
-
-        var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-            layer_style.fillOpacity = 0.2;
-            layer_style.graphicOpacity = 1;
-        var style_blue = OpenLayers.Util.extend({}, layer_style);
-            style_blue.strokeColor = "blue";
-            style_blue.fillColor = "blue";
-            style_blue.graphicName = "circle";
-            style_blue.pointRadius = 6;
-            style_blue.strokeWidth = 1;
-            style_blue.strokeLinecap = "butt";
+	    Wsbdata.maps.layers.mainTrack.addFeatures(features);
         
-        points.addFeatures(Wsbdata.Wsbparse.generateFeatures(features, Wsbdata.xml));
+        Wsbdata.maps.layers.points.addFeatures(Wsbdata.Wsbparse.generateFeatures(features, Wsbdata.xml));
 
-        selectControl = new OpenLayers.Control.SelectFeature(points,
+        Wsbdata.maps.controls.pointSelect = new OpenLayers.Control.SelectFeature(Wsbdata.maps.layers.points,
                 {onSelect: Wsbdata.PopupHandlers.onFeatureSelect, onUnselect: Wsbdata.PopupHandlers.onFeatureUnselect});
         
-        map.addControl(new OpenLayers.Control.LayerSwitcher());
-        map.addControl(selectControl);
+        Wsbdata.maps.map.addControl(new OpenLayers.Control.LayerSwitcher());
+        Wsbdata.maps.map.addControl(Wsbdata.maps.controls.pointSelect);
 
-        selectControl.activate();
+        Wsbdata.maps.controls.pointSelect.activate();
 
         var sensors = Wsbdata.Wsbparse.generateSensorObject(Wsbdata.xml);
 
@@ -115,11 +104,11 @@ var Wsbdata = {
                                      data,
                                      null, true, Wsbdata.PopupHandlers.onPopupClose);
             feature.popup = popup;
-            map.addPopup(popup);
+            Wsbdata.maps.map.addPopup(popup);
         },
 
         onFeatureUnselect: function (feature) {
-            map.removePopup(feature.popup);
+            Wsbdata.maps.map.removePopup(feature.popup);
             feature.popup.destroy();
             feature.popup = null;
         }    
