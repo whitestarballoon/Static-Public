@@ -20,7 +20,7 @@ Wsbdata.maps = {
                 externalGraphic: "img/marker-green.png",
                 graphicOpacity: 1,
                 pointRadius: 10
-            }, 
+            },
             OpenLayers.Feature.Vector.style["default"])),
                 "select": new OpenLayers.Style({
                 externalGraphic: "img/marker-blue.png"
@@ -45,11 +45,11 @@ Wsbdata.maps = {
         OpenLayers.Request.GET({
           url: Wsbdata.settings.initialData,
           success: Wsbdata.loadInitialData
-        })
+        });
 
         Wsbdata.maps.layers.points = new OpenLayers.Layer.Vector("Points", {
           'sphericalMercator': true,
-          numZoomLevels: 16,  
+          numZoomLevels: 16,
           minResolution: 0,
           maxResolution: 2000,
           styleMap: new OpenLayers.StyleMap(Wsbdata.maps.styles.dotStyle)
@@ -64,4 +64,4 @@ Wsbdata.maps = {
         Wsbdata.maps.map.addLayer(Wsbdata.maps.layers.points);
 
     }
-}
+};
