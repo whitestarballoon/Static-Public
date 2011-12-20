@@ -77,7 +77,7 @@ Wsbdata.Wsbparse = {
     },
 
     parseGPXString: function(GPX, features) {
-        var parse, newData, GPXFeatures, oldFeatures, newFeatures, newTrack, endPt, retFeats;
+        var parse, newData, GPXFeatures, oldFeatures, newFeatures, newTrack, endPt, justNew;
         parser = new DOMParser();
         newData = parser.parseFromString(GPX, "text/xml");
         GPXFeatures = Wsbdata.Wsbparse.transformFeatures(newData);
@@ -88,6 +88,9 @@ Wsbdata.Wsbparse = {
         endPt = newFeatures[newFeatures.length-1];
         endPt = [endPt.x, endPt.y];
 
+        //Holy Mother of god, that was easy.
+        Wsbdata.maps.layers.points.addFeatures(Wsbdata.Wsbparse.generateFeatures(GPXFeatures,newData));
+
         newTrack = new OpenLayers.Geometry.LineString(newFeatures);
         newTrack = new OpenLayers.Feature.Vector(newTrack);
         newTrack.id = "Main Track";
@@ -97,6 +100,8 @@ Wsbdata.Wsbparse = {
         if(Wsbdata.userSettings.panTo) {
             Wsbdata.maps.map.panTo(new OpenLayers.LonLat.fromArray(endPt));
         }
+
+
     }
 
 };

@@ -23,6 +23,26 @@
           <wsbml:status name="error">0</wsbml:status>
         </wsbml:data>
       </trkpt>
+      <trkpt lon="7.5" lat="24.2">
+        <ele>9067.7</ele>
+        <time>2011-03-25T00:20:00Z</time>
+        <sat>9</sat>
+        <hdop>2.72496895356</hdop>
+        <vdop>2.79202023301</vdop>
+        <wsbml:data>
+          <wsbml:sensor type="vspeed" name="vspeed">16.3902733222</wsbml:sensor>
+          <wsbml:sensor type="temperature" name="internal">-24.8167843913</wsbml:sensor>
+          <wsbml:sensor type="temperature" name="external">-2.14858241069</wsbml:sensor>
+          <wsbml:sensor type="temperature" name="battery">-42.1959465853</wsbml:sensor>
+          <wsbml:sensor type="temperature" name="helium">-9.102534212</wsbml:sensor>
+          <wsbml:sensor type="humidity" name="humidity">54.6363218718</wsbml:sensor>
+          <wsbml:sensor type="pressure" name="pressure">188.598979768</wsbml:sensor>
+          <wsbml:sensor type="speed" name="speed">85.3485585481</wsbml:sensor>
+          <wsbml:sensor type="cloud" name="cloud">0.45262224291</wsbml:sensor>
+          <wsbml:status name="gps">0</wsbml:status>
+          <wsbml:status name="error">0</wsbml:status>
+        </wsbml:data>
+      </trkpt>
     <trkseg>
   </trk>
 </gpx>
