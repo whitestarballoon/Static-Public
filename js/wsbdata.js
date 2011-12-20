@@ -9,6 +9,11 @@ var Wsbdata = {
         hysplitData: ""
     },
 
+    //These are changed by user inputs somewhere...
+    userSettings: {
+        panTo: true
+    },
+
     mapOptions: function() {
         return {
             numZoomLevels: 16
@@ -61,7 +66,8 @@ var Wsbdata = {
         }
 
         var features = Wsbdata.Wsbparse.transformFeatures(Wsbdata.xml);
-        
+        features[0].id = "Main Track";
+
 	    Wsbdata.maps.layers.mainTrack.addFeatures(features);
         
         Wsbdata.maps.layers.points.addFeatures(Wsbdata.Wsbparse.generateFeatures(features, Wsbdata.xml));

@@ -77,12 +77,26 @@ Wsbdata.Wsbparse = {
     },
 
     parseGPXString: function(GPX, features) {
-        var parse, newData, GPXFeatures;
+        var parse, newData, GPXFeatures, oldFeatures, newFeatures, newTrack, endPt, retFeats;
         parser = new DOMParser();
         newData = parser.parseFromString(GPX, "text/xml");
         GPXFeatures = Wsbdata.Wsbparse.transformFeatures(newData);
 
-        
+        oldFeatures = Wsbdata.maps.layers.mainTrack.getFeatureById("Main Track");
+        newFeatures = oldFeatures.geometry.getVertices();
+        newFeatures = newFeatures.concat(GPXFeatures[0].geometry.getVertices());
+        endPt = newFeatures[newFeatures.length-1];
+        endPt = [endPt.x, endPt.y];
+
+        newTrack = new OpenLayers.Geometry.LineString(newFeatures);
+        newTrack = new OpenLayers.Feature.Vector(newTrack);
+        newTrack.id = "Main Track";
+        Wsbdata.maps.layers.mainTrack.addFeatures([newTrack]);
+        Wsbdata.maps.layers.mainTrack.removeFeatures([oldFeatures]);
+
+        if(Wsbdata.userSettings.panTo) {
+            Wsbdata.maps.map.panTo(new OpenLayers.LonLat.fromArray(endPt));
+        }
     }
 
 };
