@@ -65,12 +65,22 @@ var Wsbdata = {
             Wsbdata.xml = request.responseXML;
         }
 
-        var features = Wsbdata.Wsbparse.transformFeatures(Wsbdata.xml);
-        features[0].id = "Main Track";
+        var features = Wsbdata.Wsbparse.getPointArray(Wsbdata.xml);
+        Wsbdata.maps.trackPoints = Wsbdata.Wsbparse.generateFeatures(features, Wsbdata.xml);
 
-	    Wsbdata.maps.layers.mainTrack.addFeatures(features);
+        var line = new OpenLayers.Geometry.LineString(Wsbdata.maps.trackPoints);
+        line = new OpenLayers.Feature.Vector(line);
+        line.id = "Main Track";
+
+	    Wsbdata.maps.layers.mainTrack.addFeatures(line);
+
+        //have to use for loop so that each feature is clickable
+        var featArray = [];
+        for(var i = 0; Wsbdata.maps.trackPoints.length > i; i++) {
+            featArray.push(new OpenLayers.Feature.Vector(Wsbdata.maps.trackPoints[i]));
+        }
         
-        Wsbdata.maps.layers.points.addFeatures(Wsbdata.Wsbparse.generateFeatures(features, Wsbdata.xml));
+        Wsbdata.maps.layers.points.addFeatures(featArray);
 
         Wsbdata.maps.controls.pointSelect = new OpenLayers.Control.SelectFeature(Wsbdata.maps.layers.points,
                 {onSelect: Wsbdata.PopupHandlers.onFeatureSelect, onUnselect: Wsbdata.PopupHandlers.onFeatureUnselect});
@@ -95,12 +105,12 @@ var Wsbdata = {
 
     PopupHandlers: {
         onPopupClose: function (evt) {
-            selectControl.unselect(selectedFeature);
+            Wsbdata.maps.controls.pointSelect.unselect(selectedFeature);
         },
 
         onFeatureSelect: function (feature) {
             selectedFeature = feature;
-            var attribute = feature.attributes.array;
+            var attribute = feature.geometry.array;
             var data = "<div style='font-size:.8em'>";
             for (var i = 0; i < attribute.length; i++) {
                 data += "<p>" + attribute[i].type + " " + attribute[i].name + " " + attribute[i].value + "</p>";

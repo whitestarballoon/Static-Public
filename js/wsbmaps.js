@@ -9,6 +9,8 @@ Wsbdata.maps = {
         points: undefined
     },
 
+    trackPoints: undefined,
+
     styles: {
         mainTrackStyle: {
             strokeColor: "#FFFF00",
