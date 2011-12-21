@@ -43,6 +43,6 @@
           <wsbml:status name="error">0</wsbml:status>
         </wsbml:data>
       </trkpt>
-    <trkseg>
+    </trkseg>
   </trk>
 </gpx>

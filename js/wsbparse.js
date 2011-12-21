@@ -14,11 +14,11 @@ Wsbdata.Wsbparse = {
     
     generateSensorObject: function(xmlDom) {
         var sensors = {};
+        var xmlElems = xmlDom.getElementsByTagNameNS("*", "data");
 
-        $('data', xmlDom).each(function(i)
-        {
-            var time = new Date($(this).parent().find('time').text()).getTime();
-            var ele = $(this).parent().find('ele').text();
+        for (var i = 0; i < xmlElems.length; i++) {
+            var time = new Date($(xmlElems[i]).parent().find('time').text()).getTime();
+            var ele = $(xmlElems[i]).parent().find('ele').text();
 
             if(typeof sensors['altitude'] == "undefined")
             {
@@ -29,36 +29,39 @@ Wsbdata.Wsbparse = {
                 sensors['altitude']['altitude'] = [];
             }
             sensors['altitude']['altitude'].push([ time, parseFloat(ele) ]);
-            $('sensor', this).each(function(i) {
-                if(typeof sensors[$(this).attr('type')] == "undefined")
+            var sensorXml = xmlElems[i].getElementsByTagNameNS("*", "sensor");
+            for (var j = 0; j < sensorXml.length; j++) {
+                sensorXml[j].getAttribute('name');
+                if(typeof sensors[sensorXml[j].getAttribute('type')] == "undefined")
                 {
-                    sensors[$(this).attr('type')] = {};
+                    sensors[sensorXml[j].getAttribute('type')] = {};
                 }
-                if(typeof sensors[$(this).attr('type')][$(this).attr('name')] == "undefined")
+                if(typeof sensors[sensorXml[j].getAttribute('type')][sensorXml[j].getAttribute('name')] == "undefined")
                 {
-                    sensors[$(this).attr('type')][$(this).attr('name')] = [];
+                    sensors[sensorXml[j].getAttribute('type')][sensorXml[j].getAttribute('name')] = [];
                 }
-                sensors[$(this).attr('type')][$(this).attr('name')].push([ time, parseFloat($(this).text()) ]);
-            });
-        });
+                sensors[sensorXml[j].getAttribute('type')][sensorXml[j].getAttribute('name')].push([ time, parseFloat(sensorXml[j].textContent) ]);
+            }
+        }
 
         return sensors;
     },
 
     generateFeatures: function(points, xmlDom) {
         var feat = [];
-        //var pointFeatures = features[0].geometry.getVertices();
+        var xmlElems = xmlDom.getElementsByTagNameNS("*", "data");
 
-        if ( $('data', xmlDom).length == points.length ) {
-            $('data', xmlDom).each(function (i) {
-                var time = new Date($(this).parent().find('time').text()).getTime();
-                var ele = $(this).parent().find('ele').text();
+        if ( xmlElems.length == points.length ) {
+            for (var i = 0; i < xmlElems.length; i++) {
+                var time = new Date($(xmlElems[i]).parent().find('time').text()).getTime();
+                var ele = $(xmlElems[i]).parent().find('ele').text()
                 var sensor = [];
-                $('sensor', this).each(function(i) {
-                    sensor.push( { type: $(this).attr('type'), name: $(this).attr('name'), value: $(this).text()} );
-                });
+                var sensors = xmlElems[i].getElementsByTagNameNS("*", "sensor");
+                for(var j = 0; j < sensors.length; j++) {
+                    sensor.push( { type: sensors[j].getAttribute('type'), name: sensors[j].getAttribute('name'), value: sensors[j].textContent } );
+                }
                 points[i].array = sensor;
-            });
+            }
         }
         
         return points;
