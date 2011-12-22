@@ -99,7 +99,7 @@ var Wsbdata = {
             }
         }
 
-        Wsbdata.Wsbparse.parseGPXString(Wsbdata.testNext);
+        //Wsbdata.Wsbparse.parseGPXString(Wsbdata.testNext);
 
 	},
 
@@ -145,6 +145,28 @@ var Wsbdata = {
         this.id = id;
         this.title = title;
         this.initData = undefined;
+    },
+
+    CommandHandler: function(data) {
+        switch(data.command) {
+            case "new_data":
+                $.ajax({
+                    type: "GET",
+                    url: data.url,
+                    dataType: "xml",
+                    mimeType: "application/xml",
+                    success: function(data, code) {
+                        Wsbdata.Wsbparse.parseGPXString(data);
+                    },
+                    error: function() {alert('failed ajax');}
+
+                });
+                
+                break;
+            case "test":
+                alert(data);
+                break;
+        }
     },
 
     temperatureTraces: undefined,

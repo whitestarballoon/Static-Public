@@ -90,7 +90,11 @@ Wsbdata.Wsbparse = {
     parseGPXString: function(GPX, features) {
         var parse, newData, GPXFeatures, oldFeatures, newFeatures, newTrack, endPt, justNew;
         parser = new DOMParser();
-        newData = parser.parseFromString(GPX, "text/xml");
+        if( typeof GPX == "string") {
+            newData = parser.parseFromString(GPX, "text/xml");
+        } else {
+            newData = GPX;        
+        }
         GPXFeatures = Wsbdata.Wsbparse.getPointArray(newData);
 
         GPXFeatures = Wsbdata.Wsbparse.generateFeatures(GPXFeatures, newData);
