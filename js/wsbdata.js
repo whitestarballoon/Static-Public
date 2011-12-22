@@ -43,6 +43,17 @@ var Wsbdata = {
         }
     },
 
+    findChartAddData: function(type, name, data) {
+        for(var i = 0; i < Wsbdata.charts.length; i++) {
+            if(Wsbdata.charts[i].type == type && Wsbdata.charts[i].hasTrace(name)) {
+                var series = Wsbdata.charts[i].chartItem.get(name);
+                for(var j = 0; j < data.length; j++) {
+                    series.addPoint(data[j]);
+                }
+            }
+        }
+    },
+
     findChartSetData: function(type, name, data) {
         for(var i = 0; i < Wsbdata.charts.length; i++) {
             if(Wsbdata.charts[i].type == type && Wsbdata.charts[i].hasTrace(name)) {

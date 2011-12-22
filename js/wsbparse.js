@@ -88,7 +88,7 @@ Wsbdata.Wsbparse = {
     },
 
     parseGPXString: function(GPX, features) {
-        var parse, newData, GPXFeatures, oldFeatures, newFeatures, newTrack, endPt, justNew;
+        var parse, newData, GPXFeatures, oldFeatures, newFeatures, newTrack, endPt, justNew, sensorData;
         parser = new DOMParser();
         if( typeof GPX == "string") {
             newData = parser.parseFromString(GPX, "text/xml");
@@ -121,6 +121,15 @@ Wsbdata.Wsbparse = {
 
         if(Wsbdata.userSettings.panTo) {
             Wsbdata.maps.map.panTo(new OpenLayers.LonLat.fromArray(endPt));
+        }
+
+        sensorData = Wsbdata.Wsbparse.generateSensorObject(newData);
+
+        for (var chart in sensorData) {
+            for (var trace in sensorData[chart]) {
+                Wsbdata.findChartAddData(chart, trace, sensorData[chart][trace]);
+                Wsbdata.Wsbgauges.findGaugeSetValue(chart, trace, sensorData[chart][trace][sensorData[chart][trace].length-1][1]);
+            }
         }
 
 
