@@ -5,7 +5,7 @@ var Wsbdata = {
     format: undefined,
 
     settings: {
-        initialData: "init.gpx",
+        initialData: "http://test3.whitestarballoon.com/data/init.gpx",
         hysplitData: ""
     },
 
@@ -59,10 +59,19 @@ var Wsbdata = {
 		Wsbdata.format = new OpenLayers.Format.GPX();
 
         //Get the XML
-		if (!request.responseXML.documentElement) {
-			Wsbdata.xml = Wsbdata.format.read(request.responseText);
-		} else {
-            Wsbdata.xml = request.responseXML;
+        try {
+            var parser = new DOMParser();
+            if(request.responseXML === null) {
+                Wsbdata.xml = parser.parseFromString(request.responseText, "text/xml");
+            } else {
+                if (!request.responseXML.documentElement) {
+                    Wsbdata.xml = Wsbdata.format.read(request.responseText);
+                } else {
+                    Wsbdata.xml = request.responseXML;
+                }
+            }
+        } catch(err) {
+            $.l(err);
         }
 
         var features = Wsbdata.Wsbparse.getPointArray(Wsbdata.xml);
@@ -164,7 +173,7 @@ var Wsbdata = {
                 
                 break;
             case "test":
-                alert(data);
+                $.l(data);
                 break;
         }
     },
