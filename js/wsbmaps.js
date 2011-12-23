@@ -9,7 +9,7 @@ Wsbdata.maps = {
         points: undefined
     },
 
-    trackPoints: undefined,
+    trackPoints: [],
 
     styles: {
         mainTrackStyle: {
@@ -19,14 +19,22 @@ Wsbdata.maps = {
         },
         dotStyle: {
             "default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({
-                externalGraphic: "img/marker-green.png",
-                graphicOpacity: 1,
-                pointRadius: 10
+                strokeColor: "#0080FF",
+                fillColor: "#0080FF",
+                pointRadius: 5
             },
             OpenLayers.Feature.Vector.style["default"])),
-                "select": new OpenLayers.Style({
-                externalGraphic: "img/marker-blue.png"
+            "select": new OpenLayers.Style({
+                strokeColor: "#FF0000",
+                fillColor: "#FF0000"
             })
+        },
+        firstDotStyle: {
+            "default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({
+                externalGraphic: "img/lally.png",
+                pointRadius: 64
+            },
+            OpenLayers.Feature.Vector.style["default"]))
         },
         hysplitStyle: {}
     },

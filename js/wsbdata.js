@@ -2,7 +2,7 @@ var Wsbdata = {
 
     xml: undefined,
 
-    format: undefined,
+    format: new OpenLayers.Format.GPX(),
 
     settings: {
         initialData: "http://test3.whitestarballoon.com/data/init.gpx",
@@ -83,7 +83,6 @@ var Wsbdata = {
 	loadInitialData: function (request) {
         "use strict";
         var i, features, elems, time;
-		Wsbdata.format = new OpenLayers.Format.GPX();
 
         //Get the XML
         try {
@@ -101,7 +100,9 @@ var Wsbdata = {
             $.l(err);
         }
 
-        var features = Wsbdata.Wsbparse.getPointArray(Wsbdata.xml);
+        Wsbdata.Wsbparse.parseGPXString(Wsbdata.xml);
+
+       /* var features = Wsbdata.Wsbparse.getPointArray(Wsbdata.xml);
         Wsbdata.maps.trackPoints = Wsbdata.Wsbparse.generateFeatures(features, Wsbdata.xml);
 
         var line = new OpenLayers.Geometry.LineString(Wsbdata.maps.trackPoints);
@@ -116,7 +117,7 @@ var Wsbdata = {
             featArray.push(new OpenLayers.Feature.Vector(Wsbdata.maps.trackPoints[i]));
         }
         
-        Wsbdata.maps.layers.points.addFeatures(featArray);
+        Wsbdata.maps.layers.points.addFeatures(featArray);*/
 
         Wsbdata.maps.controls.pointSelect = new OpenLayers.Control.SelectFeature(Wsbdata.maps.layers.points,
                 {onSelect: Wsbdata.PopupHandlers.onFeatureSelect, onUnselect: Wsbdata.PopupHandlers.onFeatureUnselect});
@@ -126,14 +127,14 @@ var Wsbdata = {
 
         Wsbdata.maps.controls.pointSelect.activate();
 
-        var sensors = Wsbdata.Wsbparse.generateSensorObject(Wsbdata.xml);
+        /*var sensors = Wsbdata.Wsbparse.generateSensorObject(Wsbdata.xml);
 
         for (var chart in sensors) {
             for (var trace in sensors[chart]) {
                 Wsbdata.findChartSetData(chart, trace, sensors[chart][trace]);
                 Wsbdata.Wsbgauges.findGaugeSetValue(chart, trace, sensors[chart][trace][sensors[chart][trace].length-1][1]);
             }
-        }
+        }*/
 
         //Wsbdata.Wsbparse.parseGPXString(Wsbdata.testNext);
 

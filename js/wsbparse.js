@@ -87,7 +87,7 @@ Wsbdata.Wsbparse = {
         return rv;
     },
 
-    parseGPXString: function(GPX, features) {
+    parseGPXString: function(GPX) {
         var parse, newData, GPXFeatures, oldFeatures, newFeatures, newTrack, endPt, justNew, sensorData;
         parser = new DOMParser();
         if( typeof GPX == "string") {
@@ -95,6 +95,7 @@ Wsbdata.Wsbparse = {
         } else {
             newData = GPX;        
         }
+        
         GPXFeatures = Wsbdata.Wsbparse.getPointArray(newData);
 
         GPXFeatures = Wsbdata.Wsbparse.generateFeatures(GPXFeatures, newData);
@@ -109,7 +110,11 @@ Wsbdata.Wsbparse = {
 
         oldFeatures = Wsbdata.maps.layers.mainTrack.getFeatureById("Main Track");
         Wsbdata.maps.layers.mainTrack.addFeatures(line);
-        Wsbdata.maps.layers.mainTrack.removeFeatures([oldFeatures]);
+        if(oldFeatures != null) {
+            Wsbdata.maps.layers.mainTrack.removeFeatures([oldFeatures]);
+        }
+
+        GPXFeatures[GPXFeatures.length - 1];
 
         //have to use for loop so that each feature is clickable
         var featArray = [];
@@ -127,7 +132,7 @@ Wsbdata.Wsbparse = {
 
         for (var chart in sensorData) {
             for (var trace in sensorData[chart]) {
-                Wsbdata.findChartAddData(chart, trace, sensorData[chart][trace]);
+                Wsbdata.findChartSetData(chart, trace, sensorData[chart][trace]);
                 Wsbdata.Wsbgauges.findGaugeSetValue(chart, trace, sensorData[chart][trace][sensorData[chart][trace].length-1][1]);
             }
         }

@@ -20,7 +20,7 @@ Wsbdata.Wsbgraphs = {
             seriesArray.push({
                 name: chart.traces[i].title,
                 id: chart.traces[i].id,
-                data: chart.traces[i].initData || []
+                data: []
                 });
         }
         
