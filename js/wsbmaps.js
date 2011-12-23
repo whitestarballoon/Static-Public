@@ -30,11 +30,10 @@ Wsbdata.maps = {
             })
         },
         firstDotStyle: {
-            "default": new OpenLayers.Style(OpenLayers.Util.applyDefaults({
-                externalGraphic: "img/lally.png",
-                pointRadius: 64
-            },
-            OpenLayers.Feature.Vector.style["default"]))
+            externalGraphic: "img/lally.png",
+            strokeColor: "#0080FF",
+            fillColor: "#0080FF",
+            pointRadius: 32
         },
         hysplitStyle: {}
     },

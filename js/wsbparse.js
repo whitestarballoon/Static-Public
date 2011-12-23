@@ -88,7 +88,7 @@ Wsbdata.Wsbparse = {
     },
 
     parseGPXString: function(GPX) {
-        var parse, newData, GPXFeatures, oldFeatures, newFeatures, newTrack, endPt, justNew, sensorData;
+        var parse, newData, GPXFeatures, oldFeatures, newFeatures, newTrack, endPt, justNew, sensorData, lastPt;
         parser = new DOMParser();
         if( typeof GPX == "string") {
             newData = parser.parseFromString(GPX, "text/xml");
@@ -114,8 +114,6 @@ Wsbdata.Wsbparse = {
             Wsbdata.maps.layers.mainTrack.removeFeatures([oldFeatures]);
         }
 
-        GPXFeatures[GPXFeatures.length - 1];
-
         //have to use for loop so that each feature is clickable
         var featArray = [];
         for(var i = 0; GPXFeatures.length > i; i++) {
@@ -124,6 +122,19 @@ Wsbdata.Wsbparse = {
         
         Wsbdata.maps.layers.points.addFeatures(featArray);
 
+        
+        
+        if(Wsbdata.maps.layers.points.features.length > 1) {
+            var prevLastPt = Wsbdata.maps.layers.points.features[Wsbdata.maps.layers.points.features.length - 2];
+            prevLastPt.style = null;
+        }
+        
+        lastPt = Wsbdata.maps.layers.points.features[Wsbdata.maps.layers.points.features.length - 1];
+
+        lastPt.style = Wsbdata.maps.styles.firstDotStyle;
+
+        Wsbdata.maps.layers.points.redraw();
+        
         if(Wsbdata.userSettings.panTo) {
             Wsbdata.maps.map.panTo(new OpenLayers.LonLat.fromArray(endPt));
         }
@@ -132,7 +143,7 @@ Wsbdata.Wsbparse = {
 
         for (var chart in sensorData) {
             for (var trace in sensorData[chart]) {
-                Wsbdata.findChartSetData(chart, trace, sensorData[chart][trace]);
+                Wsbdata.findChartAddData(chart, trace, sensorData[chart][trace]);
                 Wsbdata.Wsbgauges.findGaugeSetValue(chart, trace, sensorData[chart][trace][sensorData[chart][trace].length-1][1]);
             }
         }

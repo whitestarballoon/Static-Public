@@ -64,8 +64,9 @@ var Wsbdata = {
             if(Wsbdata.charts[i].type == type && Wsbdata.charts[i].hasTrace(name)) {
                 var series = Wsbdata.charts[i].chartItem.get(name);
                 for(var j = 0; j < data.length; j++) {
-                    series.addPoint(data[j]);
+                    series.addPoint(data[j], false);
                 }
+                series.chart.redraw();
             }
         }
     },
@@ -102,23 +103,6 @@ var Wsbdata = {
 
         Wsbdata.Wsbparse.parseGPXString(Wsbdata.xml);
 
-       /* var features = Wsbdata.Wsbparse.getPointArray(Wsbdata.xml);
-        Wsbdata.maps.trackPoints = Wsbdata.Wsbparse.generateFeatures(features, Wsbdata.xml);
-
-        var line = new OpenLayers.Geometry.LineString(Wsbdata.maps.trackPoints);
-        line = new OpenLayers.Feature.Vector(line);
-        line.id = "Main Track";
-
-	    Wsbdata.maps.layers.mainTrack.addFeatures(line);
-
-        //have to use for loop so that each feature is clickable
-        var featArray = [];
-        for(var i = 0; Wsbdata.maps.trackPoints.length > i; i++) {
-            featArray.push(new OpenLayers.Feature.Vector(Wsbdata.maps.trackPoints[i]));
-        }
-        
-        Wsbdata.maps.layers.points.addFeatures(featArray);*/
-
         Wsbdata.maps.controls.pointSelect = new OpenLayers.Control.SelectFeature(Wsbdata.maps.layers.points,
                 {onSelect: Wsbdata.PopupHandlers.onFeatureSelect, onUnselect: Wsbdata.PopupHandlers.onFeatureUnselect});
         
@@ -126,17 +110,6 @@ var Wsbdata = {
         Wsbdata.maps.map.addControl(Wsbdata.maps.controls.pointSelect);
 
         Wsbdata.maps.controls.pointSelect.activate();
-
-        /*var sensors = Wsbdata.Wsbparse.generateSensorObject(Wsbdata.xml);
-
-        for (var chart in sensors) {
-            for (var trace in sensors[chart]) {
-                Wsbdata.findChartSetData(chart, trace, sensors[chart][trace]);
-                Wsbdata.Wsbgauges.findGaugeSetValue(chart, trace, sensors[chart][trace][sensors[chart][trace].length-1][1]);
-            }
-        }*/
-
-        //Wsbdata.Wsbparse.parseGPXString(Wsbdata.testNext);
 
 	},
 
