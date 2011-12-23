@@ -41,6 +41,22 @@ var Wsbdata = {
         for (var i = 0; i < Wsbdata.charts.length; i++) {
             Wsbdata.Wsbgraphs.createChart(Wsbdata.charts[i]);
         }
+
+        Wsbdata.popupData = Wsbdata.popupData();
+    },
+
+    popupData: function() {
+        return [
+            new Wsbdata.MapPopup('temperature', 'internal', 'Internal Temperature', 'Deg C'),
+            new Wsbdata.MapPopup('temperature', 'external', 'External Temperature', 'Deg C'),
+            new Wsbdata.MapPopup('temperature', 'helium', 'External Temperature', 'Deg C'),
+            new Wsbdata.MapPopup('temperature', 'battery', 'External Temperature', 'Deg C'),
+            new Wsbdata.MapPopup('altitude', 'altitude', 'Altitude', 'M'),
+            new Wsbdata.MapPopup('pressure', 'pressure', 'Barometric Pressure', 'HPa'),
+            new Wsbdata.MapPopup('humidity', 'humidity', 'Relative Humidity', '%'),
+            new Wsbdata.MapPopup('speed', 'speed', 'Groundspeed', 'kph'),
+            new Wsbdata.MapPopup('vspeed', 'vspeed', 'Vertical Speed', 'Meters/min')
+        ]
     },
 
     findChartAddData: function(type, name, data) {
@@ -130,10 +146,19 @@ var Wsbdata = {
 
         onFeatureSelect: function (feature) {
             selectedFeature = feature;
+            var currentName, currentUnits;
             var attribute = feature.geometry.array;
             var data = "<div style='font-size:.8em'>";
             for (var i = 0; i < attribute.length; i++) {
-                data += "<p>" + attribute[i].type + " " + attribute[i].name + " " + attribute[i].value + "</p>";
+                //This is a dirty messy hack
+                for(var j = 0; j < Wsbdata.popupData.length; j++) {
+                    if(Wsbdata.popupData[j].type == attribute[i].type && Wsbdata.popupData[j].trace == attribute[i].name) {
+                        currentName = Wsbdata.popupData[j].name;
+                        currentUnits = Wsbdata.popupData[j].units;
+                        data += "<p>" + currentName + " " + Math.round(attribute[i].value*100)/100 + " " + currentUnits + "</p>";
+                    }
+                }
+                
             }
             data += "</div>";
             popup = new OpenLayers.Popup.FramedCloud("chicken", 
@@ -165,6 +190,13 @@ var Wsbdata = {
         this.id = id;
         this.title = title;
         this.initData = undefined;
+    },
+
+    MapPopup: function(type, trace, name, units) {
+        this.type = type;
+        this.trace = trace;
+        this.name = name;
+        this.units = units;
     },
 
     CommandHandler: function(data) {
@@ -211,5 +243,4 @@ Wsbdata.Chart.prototype.addPoint = function (sensorName, x, y) {
     series.addPoint([x, y], true, false);    
     //series.chart.redraw();
 }
-
 

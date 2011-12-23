@@ -51,8 +51,8 @@ Wsbdata.Wsbgauges = {
                 label: "Groundspeed (Knots)",
                 bands: [ {color: "#ffff00", from: 0, to: 75} ]
             },
-            type: "groundSpeed",
-            trace: "groundSpeed",
+            type: "speed",
+            trace: "speed",
             gauge: undefined
         } ],
 
