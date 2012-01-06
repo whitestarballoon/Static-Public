@@ -2,10 +2,10 @@
 /*global $: true, WSBOUT: true, Highcharts: true */
 WSBOUT.sensors = (function (my) {
 
-    var sensorList = {}, addSensor, addData, sensor;
+    var sensorList = [], addSensor, getSensor, addData, sensor;
 
     sensor = function (spec) {
-        var that, addData, getGraph, sensor, myGraph, myGraphSettings;
+        var that, addData, getGraph, sensor, myGraph, myGraphSettings, i, mySeries;
 
         that = {};
 
@@ -20,33 +20,42 @@ WSBOUT.sensors = (function (my) {
             $('#' + spec.gaugeDiv).gauge('init', spec.gaugeOptions || {});
         }
 
-        for (sensor in my.sensorList) {
-            if (my.sensorList.hasOwnProperty(sensor)) {
-                if (sensor.graphDiv === that.graphDiv) {
-                    myGraph = sensor.getGraph();
-                }
+        for (i = 0; i < sensorList.length; i += 1) {
+            if (sensorList[i].graphDiv === that.graphDiv) {
+                myGraph = sensorList[i].getGraph();
             }
         }
         if (myGraph === undefined && that.graphDiv !== "") {
             myGraphSettings = $.extend({}, WSBOUT.defaultGraph);
             myGraphSettings.chart.renderTo = that.graphDiv;
+            myGraphSettings.title = {};
             myGraphSettings.title.text = that.niceName;
+            myGraphSettings.series = [{id: "series" + that.name, name: that.name, data: []}];
             myGraph = new Highcharts.StockChart(myGraphSettings);
+            mySeries = myGraph.get("series" + that.name);
             //create new graph
+        } else {
+            mySeries = myGraph.addSeries({id: "series" + that.name, name: that.name, data: []}, false);
         }
         //create new trace
 
-        //search for other sensors with same graph div
-            //if no other sensors
-                //create graph
-            //else
-                //find graph
-            //create trace
-
+        //Assumption: Data is an array of arrays.
         addData = function (data) {
             var i;
+            if (!data[0] instanceof Array) {
+                data = [data];
+            }
+            if (mySeries) {
+                for (i = 0; i < data.length; i += 1) {
+                    mySeries.addPoint(data[i], false);
+                }
+                myGraph.redraw();
+            }
+            if (spec.gaugeDiv) {
+                $('#' + spec.gaugeDiv).gauge('setValue', data[i-1][1]);
+            }
         };
-        that.addData = addData;
+        that.add_data = addData;
 
         getGraph = function () {
             return myGraph;
@@ -57,20 +66,26 @@ WSBOUT.sensors = (function (my) {
     };
     my.sensor = sensor;
 
+    getSensor = function (type, name) {
+        var i;
+        for (i = 0; i < sensorList.length; i += 1) {
+            if (sensorList[i].name === name && sensorList[i].type === type) {
+                return sensorList[i];
+            }
+        }
+        return false;
+    };
+    my.getSensor = getSensor;
+
     addSensor = function (sensor) {
-        $.extend(sensorList, sensor);
-        //
+        sensorList.push(sensor);
     };
     my.addSensor = addSensor;
 
     /* data in this form:
         {
             type: {
-                name: {
-                    data: [[time, value],
-                            [time, value]];
-
-                }
+                name: [[x y], [x y]]
             }
         }
     */
@@ -78,13 +93,15 @@ WSBOUT.sensors = (function (my) {
         var type, name, i, that, currentSensor, currentData;
         that = this;
         for (type in data) {
-            if (data.hasOwnProperty(type) && sensorList.hasOwnProperty(type)) {
-                for (name in type) {
-                    if (type.hasOwnProperty(name) && sensorList[type].hasOwnProperty(name)) {
-                        currentSensor = sensorList[type][name];
-                        currentData = data[type][name].data;
-                        currentSensor.graph.add_data(data);
-                        currentSensor.gauge.set_value(data[data.length - 1]);
+            if (data.hasOwnProperty(type)) {
+                for (name in data[type]) {
+                    if (data[type].hasOwnProperty(name)) {
+                        currentSensor = getSensor(type, name);
+                        if (currentSensor) {
+                            currentData = data[type][name];
+                            currentSensor.add_data(currentData);
+                            //currentSensor.set_value(currentData[currentData.length - 1]);
+                        }
                     }
                 }
             }

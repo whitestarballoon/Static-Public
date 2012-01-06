@@ -14,18 +14,18 @@ var WSBOUT = (function (my) {
         $.getJSON("js/settings.json", function (data) {
             var GPXUrl;
             GPXUrl = data.initialData;
-            my.defaultGraphSettings = data.defaultGraph;
-            $.get(GPXUrl, function (data) {
-                var displayData, testGraph;
-                displayData = my.parseForDisplay(data);
-                my.sensors.addSensor();
-                my.sensors.addData(displayData);
-            });
-        });
-
-        $.getJSON("js/sensors.json", function (data) {
-            $.each(data.sensors, function (i, data) {
-                my.sensors.sensor(data);
+            my.defaultGraph = data.defaultGraph;
+            $.getJSON("js/sensors.json", function (data) {
+                var i, aSensor;
+                for (i = 0; i < data.sensors.length; i += 1) {
+                    aSensor = my.sensors.sensor(data.sensors[i]);
+                    my.sensors.addSensor(aSensor);
+                }
+                $.get(GPXUrl, function (data) {
+                    var displayData, testGraph;
+                    displayData = my.parseForDisplay(data);
+                    my.sensors.addData(displayData);
+                });
             });
         });
 
