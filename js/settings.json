@@ -1,0 +1,58 @@
+{
+    "initialData" : "http://test3.whitestarballoon.com/data/init.gpx",
+    "hysplitData" : "",
+    "mapOptions" : {
+        "numZoomLevels": 16
+    },
+    "defaultGraph": {
+        "chart": {
+            "defaultSeriesType": "spline",
+            "marginRight": 10
+        },
+        "rangeSelector": {
+            "buttons": [{
+                "type": "day",
+                "count": 2,
+                "text": "3d"
+            }, {
+                "type": "day",
+                "count": 1,
+                "text": "1d"  
+            }, {
+                "type": "minute",
+                "count": 720,
+                "text": "12h"
+            }, {
+                "type": "minute",
+                "count": 360,
+                "text": "6h"
+            },
+            {
+                "type": "all",
+                "text": "All"
+            }],
+            "selected": 4,
+            "inputEnabled": false
+        },
+        "xAxis": {
+            "type": "datetime",
+            "tickPixelInterval": 150
+        },
+        "yAxis": {
+            "title": {
+                "text": "Value"
+            },
+            "plotLines": [{
+                "value": 0,
+                "width": 1,
+                "color": "#808080"
+            }]
+        },
+        "legend": {
+            "enabled": false
+        },
+        "exporting": {
+            "enabled": false
+        }
+    }
+}

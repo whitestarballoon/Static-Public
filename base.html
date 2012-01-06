@@ -49,11 +49,9 @@
 
   <script type="text/javascript">
   $(document).ready(function () {
-    Wsbdata.initCharts();
-    Wsbdata.Wsbgraphs.setHighchartsOptions();
-
-    Wsbdata.Wsbgauges.initGauges();
-
+    
+    WSBOUT.init();
+    
     $("#tweets").liveTwitter('lvl1whitestar', 
       {mode: 'user_timeline', limit: 1, rate: 60000});
 
@@ -62,7 +60,7 @@
 
 </head>
 
-<body onload="Wsbdata.maps.init()">
+<body onload="">
 
   <header>
     <div class="topbar">
@@ -195,7 +193,7 @@
           error    : function() {        // LOST CONNECTION (auto reconnects)
               alert("Connection Lost. Will auto-reconnect when Online.")
           },
-          callback : Wsbdata.CommandHandler,
+          callback : WSBOUT.commandHandler,
           connect  : function() {        // CONNECTION ESTABLISHED.
           }
       })

@@ -1,0 +1,39 @@
+{
+    "sensors": [
+        {
+            "type": "temperature",
+            "name": "internal",
+            "graphDiv": "tempChart",
+            "onPopup": true,
+            "units": "Degrees C",
+            "niceName": "Internal Temperature",
+            "gaugeOptions" : {
+                "min": -60, 
+                "max": 60,
+                "label": "Degrees C",
+                "bands": [
+                    { "color": "#ff0000", "from": -60, "to": -40},
+                    { "color": "#ff0000", "from": 40, "to": 60}
+                ]
+            }
+        },
+        {
+            "type": "temperature",
+            "name": "external",
+            "gaugeDiv": "externalTempGauge",
+            "graphDiv": "tempChart",
+            "onPopup": true,
+            "units": "Degrees C",
+            "niceName": "External Temperature",
+            "gaugeOptions" : {
+                "min": -60, 
+                "max": 60,
+                "label": "Degrees C",
+                "bands": [
+                    { "color": "#ff0000", "from": -60, "to": -40},
+                    { "color": "#ff0000", "from": 40, "to": 60}
+                ]
+            }
+        }
+    ]
+}

@@ -1,91 +1,253 @@
 /*global alert: true, popup: true, selectedFeature: true, $: true, DOMParser: true, clearInterval: false, clearTimeout: false, document: false, event: false, frames: false, history: false, Image: false, location: false, name: false, navigator: false, Option: false, parent: false, screen: false, setInterval: false, setTimeout: false, window: false, XMLHttpRequest: false, OpenLayers: true */
 /*jslint sloppy: true, plusplus: true */
+Array.prototype.is_array = function (value) {
+    return Object.prototype.toString.apply(value) === '[object Array]';
+};
+
+var WSBOUT = (function (my) {
+
+    var graph, gauge, panTo, init;
+
+    panTo = true;
+
+    init = function () {
+        $.getJSON("js/settings.json", function (data) {
+            var GPXUrl;
+            GPXUrl = data.initialData;
+            $.get(GPXUrl, function (data) {
+                var displayData, testGraph;
+                displayData = my.parseForDisplay(data);
+                my.sensors.addSensor();
+                my.sensors.addData(displayData);
+                my.defaultGraphSettings = data.defaultGraph;
+            });
+        });
+
+    };
+    my.init = init;
+
+    gauge = function (spec) {
+        var that;
+
+        that = {};
+
+        $('#' + spec.div).gauge('init', spec.options);
+
+        that.set_value = function (value) {
+            $('#' + spec.div).gauge('setValue', value);
+        };
+
+        return that;
+    };
+    my.gauge = gauge;
+
+    graph = function (spec) {
+        var that;
+
+        that = {};
+
+        /* data in this form:
+            [x y]
+            OR
+            [[x y], [x y]]
+        */
+        that.add_data = function (data) {
+            var localData, i;
+            if (!Array.is_array(data[0])) {
+                localData = [data];
+            } else {
+                localData = data;
+            }
+            for (i = 0; i < localData.length; i += 1) {
+                //Add data to graph.
+            }
+            //Refresh graph
+        };
+    };
+    my.graph = graph;
+
+    return my;
+}({}));
+
+var WSBOUT = (function (my) {
+    var parseForDisplay, parseForBubbles;
+
+    parseForDisplay = function (GPXDom) {
+        var sensors, xmlElems, i, j, time, ele, sensorXml;
+        sensors = {};
+        xmlElems = GPXDom.getElementsByTagNameNS("*", "data");
+
+        for (i = 0; i < xmlElems.length; i += 1) {
+            time = new Date($(xmlElems[i]).parent().find('time').text()).getTime();
+            ele = $(xmlElems[i]).parent().find('ele').text();
+
+            if (typeof sensors.altitude === "undefined") {
+                sensors.altitude = {};
+            }
+            if (typeof sensors.altitude.altitude === "undefined") {
+                sensors.altitude.altitude = [];
+            }
+            sensors.altitude.altitude.push([ time, parseFloat(ele) ]);
+            sensorXml = xmlElems[i].getElementsByTagNameNS("*", "sensor");
+            for (j = 0; j < sensorXml.length; j += 1) {
+                sensorXml[j].getAttribute('name');
+                if (typeof sensors[sensorXml[j].getAttribute('type')] === "undefined") {
+                    sensors[sensorXml[j].getAttribute('type')] = {};
+                }
+                if (typeof sensors[sensorXml[j].getAttribute('type')][sensorXml[j].getAttribute('name')] === "undefined") {
+                    sensors[sensorXml[j].getAttribute('type')][sensorXml[j].getAttribute('name')] = [];
+                }
+                sensors[sensorXml[j].getAttribute('type')][sensorXml[j].getAttribute('name')].push([ time, parseFloat(sensorXml[j].textContent) ]);
+            }
+        }
+
+        return sensors;
+    };
+    my.parseForDisplay = parseForDisplay;
+
+    parseForBubbles = function (GPXDom) {
+
+    };
+    my.parseForBubbles = parseForBubbles;
+
+    return my;
+
+}(WSBOUT));
+
+var WSBOUT = (function (my) {
+    var commandHandler;
+
+    /*
+    {
+        command: new_data or test
+        data: whatever
+    }
+    */
+
+    commandHandler = function (data) {
+        switch (data.command) {
+        case "new_data":
+            $.ajax({
+                type: "GET",
+                url: data.url,
+                dataType: "xml",
+                mimeType: "application/xml",
+                success: function (data, code) {
+                },
+                error: function () { $.l('failed ajax'); }
+
+            });
+            break;
+        case "test":
+            $.l(data);
+            break;
+        }
+    };
+    my.commandHandler = commandHandler;
+
+    return my;
+}(WSBOUT));
+
+WSBOUT.sensors = (function (my) {
+
+    var sensorList = {}, addSensor, addData, sensor;
+
+    sensor = function (spec) {
+        var addData, getGraph, sensor, myGraph,
+        ;
+
+        that = {};
+
+        that.type = spec.type;
+        that.name = spec.name;
+        that.onPopup = spec.onPopup || true;
+        that.units = spec.units || "";
+        that.niceName = spec.niceName || spec.name;
+        that.graphDiv = spec.graphDiv || "";
+
+        if(spec.gaugeDiv) {
+            $('#' + spec.gaugeDiv).gauge('init', spec.gaugeOptions || {});
+        }
+
+        for (sensor in my.sensorList) {
+            if (sensor.graphDiv === that.graphDiv) {
+                myGraph = sensor.getGraph();
+            }
+        }
+        if (myGraph === undefined && that.graphDiv !== "") {
+            var myGraphSettings = $.extend({}, WSBOUT.defaultGraph);
+            myGraphSettings.chart.renderTo = that.graphDiv;
+            myGraphSettings.title.text = that.niceName;
+            myGraph = new Highcharts.StockChart(myGraphSettings);
+            //create new graph
+        }
+        //create new trace
+
+        //search for other sensors with same graph div
+            //if no other sensors
+                //create graph
+            //else
+                //find graph
+            //create trace
+
+        addData = function(data) {
+            
+        };
+        that.addData = addData;
+
+        getGraph = function() {
+            return myGraph;
+        };
+        that.getGraph = getGraph;
+
+        return that;
+    };
+
+    addSensor = function(sensor) {
+        $.extend(sensorList, sensor);
+        //
+    };
+    my.addSensor = addSensor;
+
+    /* data in this form:
+        {
+            type: {
+                name: {
+                    data: [[time, value],
+                            [time, value]];
+
+                }
+            }
+        }
+    */
+    addData = function(data) {
+        var type, name, i, that, currentSensor, currentData;
+        that = this;
+        for (type in data) {
+            if(data.hasOwnProperty(type) && sensorList.hasOwnProperty(type)) {
+                for (name in type) {
+                    if(type.hasOwnProperty(name) && sensorList[type].hasOwnProperty(name)) {
+                        currentSensor = sensorList[type][name];
+                        currentData = data[type][name].data;
+                        currentSensor.graph.add_data(data);
+                        currentSensor.gauge.set_value(data[data.length-1]);
+                    }
+                }
+            }
+        }
+    };
+    my.addData = addData;
+
+    return my;
+
+}({}));
+
 var Wsbdata = {
 
     xml: undefined,
 
     format: new OpenLayers.Format.GPX(),
 
-    settings: {
-        initialData: "http://test3.whitestarballoon.com/data/init.gpx",
-        hysplitData: ""
-    },
-
-    //These are changed by user inputs somewhere...
-    userSettings: {
-        panTo: true
-    },
-
-    mapOptions: function () {
-        return {
-            numZoomLevels: 16
-        };
-    },
-
-    initCharts: function () {
-        var i;
-        Wsbdata.temperatureTraces = [
-            new Wsbdata.ChartTrace('internal', 'Internal Temperature'),
-            new Wsbdata.ChartTrace('external', 'External Temperature'),
-            new Wsbdata.ChartTrace('helium', 'Helium Temperature'),
-            new Wsbdata.ChartTrace('battery', 'Battery Temperature')
-        ];
-
-        Wsbdata.charts = [
-            new Wsbdata.Chart('temperature', 'Temperatures', Wsbdata.temperatureTraces, 'tempChart'),
-            new Wsbdata.Chart('altitude', 'Altitude', [new Wsbdata.ChartTrace('altitude', 'Altitude')], 'altitudeChart'),
-            new Wsbdata.Chart('pressure', 'Pressure', [new Wsbdata.ChartTrace('pressure', 'Pressure')], 'pressureChart'),
-            new Wsbdata.Chart('humidity', 'Humidity', [new Wsbdata.ChartTrace('humidity', 'Humidity')], 'humidityChart'),
-            new Wsbdata.Chart('cloud', 'Cloud', [new Wsbdata.ChartTrace('cloud', 'Cloud')], 'cloudChart'),
-            new Wsbdata.Chart('speed', 'Speed', [new Wsbdata.ChartTrace('speed', 'Speed')], 'speedChart'),
-            new Wsbdata.Chart('vspeed', 'Vertical Speed', [new Wsbdata.ChartTrace('vspeed', 'Vertical Speed')], 'vspeedChart')
-        ];
-
-        for (i = 0; i < Wsbdata.charts.length; i++) {
-            Wsbdata.Wsbgraphs.createChart(Wsbdata.charts[i]);
-        }
-
-        Wsbdata.popupData = Wsbdata.popupData();
-    },
-
-    popupData: function () {
-        return [
-            new Wsbdata.MapPopup('time', 'time', '', ''),
-            new Wsbdata.MapPopup('temperature', 'internal', 'Internal Temperature', 'Deg C'),
-            new Wsbdata.MapPopup('temperature', 'external', 'External Temperature', 'Deg C'),
-            new Wsbdata.MapPopup('temperature', 'helium', 'External Temperature', 'Deg C'),
-            new Wsbdata.MapPopup('temperature', 'battery', 'External Temperature', 'Deg C'),
-            new Wsbdata.MapPopup('altitude', 'altitude', 'Altitude', 'M'),
-            new Wsbdata.MapPopup('pressure', 'pressure', 'Barometric Pressure', 'HPa'),
-            new Wsbdata.MapPopup('humidity', 'humidity', 'Relative Humidity', '%'),
-            new Wsbdata.MapPopup('speed', 'speed', 'Groundspeed', 'kph'),
-            new Wsbdata.MapPopup('vspeed', 'vspeed', 'Vertical Speed', 'Meters/min')
-        ];
-    },
-
-    findChartAddData: function (type, name, data) {
-        var i, j, series;
-        for (i = 0; i < Wsbdata.charts.length; i++) {
-            if (Wsbdata.charts[i].type === type && Wsbdata.charts[i].hasTrace(name)) {
-                series = Wsbdata.charts[i].chartItem.get(name);
-                for (j = 0; j < data.length; j++) {
-                    series.addPoint(data[j], false);
-                }
-                series.chart.redraw();
-            }
-        }
-    },
-
-    findChartSetData: function (type, name, data) {
-        var i, series;
-        for (i = 0; i < Wsbdata.charts.length; i++) {
-            if (Wsbdata.charts[i].type === type && Wsbdata.charts[i].hasTrace(name)) {
-                series = Wsbdata.charts[i].chartItem.get(name);
-                series.setData(data);
-                series.chart.redraw();
-            }
-        }
-    },
 
 	loadInitialData: function (request) {
         var i, features, elems, time, parser;
@@ -189,67 +351,4 @@ var Wsbdata = {
         }
     },
 
-    Chart: function (type, title, traces, div) {
-        this.type = type;
-        this.title = title;
-        this.traces = traces;
-        this.div = div;
-        this.chartItem = undefined;
-        this.isRendered = false;
-    },
-
-    ChartTrace: function (id, title) {
-        this.id = id;
-        this.title = title;
-        this.initData = undefined;
-    },
-
-    MapPopup: function (type, trace, name, units) {
-        this.type = type;
-        this.trace = trace;
-        this.name = name;
-        this.units = units;
-    },
-
-    CommandHandler: function (data) {
-        switch (data.command) {
-        case "new_data":
-            $.ajax({
-                type: "GET",
-                url: data.url,
-                dataType: "xml",
-                mimeType: "application/xml",
-                success: function (data, code) {
-                    Wsbdata.Wsbparse.parseGPXString(data);
-                },
-                error: function () { alert('failed ajax'); }
-
-            });
-            break;
-        case "test":
-            $.l(data);
-            break;
-        }
-    },
-
-    temperatureTraces: undefined,
-
-    charts: undefined
-
-};
-
-Wsbdata.Chart.prototype.hasTrace = function (name) {
-    var i;
-    for (i = 0; i < this.traces.length; i++) {
-        if (this.traces[i].id === name) {
-            return true;
-        }
-    }
-    return false;
-};
-
-Wsbdata.Chart.prototype.addPoint = function (sensorName, x, y) {
-    var series = this.chartItem.get(sensorName);
-    series.addPoint([x, y], true, false);
-    //series.chart.redraw();
 };
