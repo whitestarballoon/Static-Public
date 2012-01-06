@@ -1,4 +1,4 @@
-White Star Static Tracking Page
+White Star Static Tracking Page.
 ===============================
 
 This is the White Star Balloon Static Tracking Page.  This page uses Javascript to receive command messages, download data from Amazon S3, and display the data to the user.
