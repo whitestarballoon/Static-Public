@@ -1,11 +1,12 @@
 /*jslint sloppy: true, browser: true */
-/*global $: true, WSBOUT: true, Highcharts: true */
+/*global $: true, Highcharts: true */
+var WSBOUT;
 WSBOUT.sensors = (function (my) {
 
     var sensorList = [], addSensor, getSensor, addData, sensor;
 
     sensor = function (spec) {
-        var that, addData, getGraph, sensor, myGraph, myGraphSettings, i, mySeries;
+        var that, add_data, getGraph, sensor, myGraph, myGraphSettings, i, mySeries;
 
         that = {};
 
@@ -40,7 +41,7 @@ WSBOUT.sensors = (function (my) {
         //create new trace
 
         //Assumption: Data is an array of arrays.
-        addData = function (data) {
+        add_data = function (data) {
             var i;
             if (!data[0] instanceof Array) {
                 data = [data];
@@ -52,10 +53,10 @@ WSBOUT.sensors = (function (my) {
                 myGraph.redraw();
             }
             if (spec.gaugeDiv) {
-                $('#' + spec.gaugeDiv).gauge('setValue', data[i-1][1]);
+                $('#' + spec.gaugeDiv).gauge('setValue', data[i - 1][1]);
             }
         };
-        that.add_data = addData;
+        that.add_data = add_data;
 
         getGraph = function () {
             return myGraph;

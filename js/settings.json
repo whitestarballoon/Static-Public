@@ -1,8 +1,26 @@
 {
     "initialData" : "http://test3.whitestarballoon.com/data/init.gpx",
     "hysplitData" : "",
-    "mapOptions" : {
-        "numZoomLevels": 16
+    "mapSettings" : {
+        "mapOptions" : {
+            "numZoomLevels": 16
+        },
+        "predictionStyle" : {
+            "strokeColor": "#FFFF00",
+            "strokeWidth": 4,
+            "strokeDashstyle": "solid"
+        },
+        "trackStyle" : {
+            "strokeColor": "#FFFF00",
+            "strokeWidth": 4,
+            "strokeDashstyle": "solid"
+        },
+        "pointStyle" : {
+            
+        },
+        "lastPointStyle" : {
+            
+        }
     },
     "defaultGraph": {
         "chart": {

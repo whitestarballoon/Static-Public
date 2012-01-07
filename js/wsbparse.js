@@ -1,7 +1,7 @@
 /*jslint sloppy: true, browser: true */
 /*global $: true */
 var WSBOUT = (function (my) {
-    var parseForDisplay, parseForBubbles;
+    var parseForDisplay;
 
     parseForDisplay = function (GPXDom) {
         var sensors, xmlElems, i, j, time, ele, sensorXml;
@@ -35,11 +35,6 @@ var WSBOUT = (function (my) {
         return sensors;
     };
     my.parseForDisplay = parseForDisplay;
-
-    parseForBubbles = function (GPXDom) {
-
-    };
-    my.parseForBubbles = parseForBubbles;
 
     return my;
 

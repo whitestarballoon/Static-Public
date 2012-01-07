@@ -15,6 +15,8 @@ var WSBOUT = (function (my) {
             var GPXUrl;
             GPXUrl = data.initialData;
             my.defaultGraph = data.defaultGraph;
+            my.maps.init(data.mapSettings);
+            
             $.getJSON("js/sensors.json", function (data) {
                 var i, aSensor;
                 for (i = 0; i < data.sensors.length; i += 1) {
@@ -25,6 +27,7 @@ var WSBOUT = (function (my) {
                     var displayData, testGraph;
                     displayData = my.parseForDisplay(data);
                     my.sensors.addData(displayData);
+                    my.maps.add_from_gpx(data);
                 });
             });
         });
