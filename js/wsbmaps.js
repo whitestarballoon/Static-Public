@@ -5,23 +5,86 @@ WSBOUT.maps = (function (my) {
 
     var points, layers, initLayers, create_map, map, init, set_center,
         add_from_gpx, parseForMap, redrawTrack, redrawPoints,
-        lastPointStyle, pointStyle;
+        lastPointStyle, pointStyleMap, mapControls, onPointSelect,
+        onPointUnselect, onPointBubbleClose, selectedFeature;
 
     points = [];
 
     init = function (mapSettings) {
+        var pointStyles;
+
         lastPointStyle = mapSettings.lastPointStyle;
-        pointStyle = mapSettings.pointStyle;
+        pointStyles = mapSettings.pointStyleMap;
+
+        pointStyleMap = {
+            "default": (function () {
+                return new OpenLayers.Style(
+                    OpenLayers.Util.applyDefaults(pointStyles['default'],
+                        OpenLayers.Feature.Vector.style["default"])
+                        //No dot noation because defafult is a reserved word
+                );
+            }()),
+            "selected": (function () {
+                return new OpenLayers.Style(pointStyles.selected);
+            }())
+        };
+
         create_map(mapSettings.mapOptions);
-        initLayers(mapSettings.predictionStyle, mapSettings.trackStyle);
+        initLayers(mapSettings.predictionStyle, mapSettings.trackStyle, pointStyleMap);
         map.addLayer(layers.prediction);
         map.addLayer(layers.track);
         map.addLayer(layers.points);
+
+        mapControls = new OpenLayers.Control.SelectFeature(layers.points,
+                {onSelect: onPointSelect, onUnselect: onPointUnselect});
+        map.addControl(mapControls);
+        mapControls.activate();
+
         set_center([-85, 34], 8);
     };
     my.init = init;
 
-    initLayers = function (predictionStyle, trackStyle) {
+    onPointSelect = function (feature) {
+        var currentName, currentUnits, attribute, data, i, j, popup;
+        selectedFeature = feature;
+        attribute = feature.geometry.data;
+        data = "<div style='font-size:.8em'>";
+        for (i = 0; i < attribute.length; i += 1) {
+            data += "<p>";
+            data += attribute[i].niceName;
+            data += ": ";
+            if (attribute[i].hasOwnProperty('round')) {
+                data += parseFloat(attribute[i].value).toFixed(2);
+            } else {
+                data += attribute[i].value
+            }
+            if (attribute[i].units) {
+                data += " (";
+                data += attribute[i].units;
+                data += ")</p>";
+            }
+        }
+        data += "</div>";
+        popup = new OpenLayers.Popup.FramedCloud("chicken",
+                                 feature.geometry.getBounds().getCenterLonLat(),
+                                 null,
+                                 data,
+                                 null, true, onPointBubbleClose);
+        feature.popup = popup;
+        map.addPopup(popup);
+    };
+
+    onPointUnselect = function (feature) {
+        map.removePopup(feature.popup);
+        feature.popup.destroy();
+        feature.popup = null;
+    };
+
+    onPointBubbleClose = function (event) {
+        mapControls.unselect(selectedFeature);
+    };
+
+    initLayers = function (predictionStyle, trackStyle, pointStyleMap) {
         layers = {
             prediction: (function () {
                 return new OpenLayers.Layer.Vector("Prediction", {
@@ -40,7 +103,8 @@ WSBOUT.maps = (function (my) {
                     'sphericalMercator': true,
                     numZoomLevels: 16,
                     minResolution: 0,
-                    maxResolution: 2000
+                    maxResolution: 2000,
+                    styleMap: new OpenLayers.StyleMap(pointStyleMap)
                 });
             }())
         };
@@ -63,7 +127,7 @@ WSBOUT.maps = (function (my) {
     my.set_center = set_center;
 
     parseForMap = function (xmlElems) {
-        var bubbles, i, j, time, ele, sensorXml, sensor, sensors;
+        var bubbles, i, j, time, ele, sensorXml, sensor, sensors, wsbsensor;
         bubbles = [];
 
         // Iterate through XML Elemets.
@@ -74,11 +138,14 @@ WSBOUT.maps = (function (my) {
             ele = $(xmlElems[i]).parent().find('ele').text();
             sensor = [];
             sensors = xmlElems[i].getElementsByTagNameNS("*", "sensor");
-            sensor.push({ type: 'time', name: 'time', value: new Date(time).toString()});
-            sensor.push({ type: 'altitude', name: 'altitude', value: ele});
+            sensor.push({ niceName: 'Time', value: new Date(time).toString()});
+            sensor.push({ niceName: 'Altitude', value: ele, units: 'M'});
             for (j = 0; j < sensors.length; j += 1) {
                 //There is no reason we couldn't associate readible names here.
-                sensor.push({ type: sensors[j].getAttribute('type'), name: sensors[j].getAttribute('name'), value: sensors[j].textContent });
+                wsbsensor = WSBOUT.sensors.getSensor(sensors[j].getAttribute('type'), sensors[j].getAttribute('name'));
+                if (wsbsensor) {
+                    sensor.push({ niceName: wsbsensor.niceName, value: sensors[j].textContent, units: wsbsensor.units, round: true });
+                }
             }
             bubbles[i] = sensor;
         }

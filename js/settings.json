@@ -15,11 +15,22 @@
             "strokeWidth": 4,
             "strokeDashstyle": "solid"
         },
-        "pointStyle" : {
-            
+        "pointStyleMap" : {
+            "default": {
+                "strokeColor": "#0080FF",
+                "fillColor": "#0080FF",
+                "pointRadius": 5
+            },
+            "select": {
+                "strokeColor": "#FF0000",
+                "fillColor": "#FF0000"
+            }
         },
         "lastPointStyle" : {
-            
+            "externalGraphic": "img/lally.png",
+            "strokeColor": "#0080FF",
+            "fillColor": "#0080FF",
+            "pointRadius": 32
         }
     },
     "defaultGraph": {
