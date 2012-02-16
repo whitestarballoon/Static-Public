@@ -1,0 +1,180 @@
+{
+    "sensors": [
+        {
+            "type": "temperature",
+            "name": "internal",
+            "graphDiv": "tempChart",
+            "onPopup": true,
+            "units": "Degrees C",
+            "niceName": "Internal Temperature",
+            "gaugeOptions" : {
+                "min": -60, 
+                "max": 60,
+                "label": "Degrees C",
+                "bands": [
+                    { "color": "#ff0000", "from": -60, "to": -40},
+                    { "color": "#ff0000", "from": 40, "to": 60}
+                ]
+            }
+        },
+        {
+            "type": "temperature",
+            "name": "external",
+            "gaugeDiv": "externalTempGauge",
+            "graphDiv": "tempChart",
+            "onPopup": true,
+            "units": "Degrees C",
+            "niceName": "External Temperature",
+            "gaugeOptions" : {
+                "min": -60, 
+                "max": 60,
+                "label": "Degrees C",
+                "bands": [
+                    { "color": "#ff0000", "from": -60, "to": -40},
+                    { "color": "#ff0000", "from": 40, "to": 60}
+                ]
+            }
+        },
+        {
+            "type": "temperature",
+            "name": "battery",
+            "graphDiv": "tempChart",
+            "onPopup": true,
+            "units": "Degrees C",
+            "niceName": "Battery Temperature",
+            "gaugeOptions" : {
+                "min": -60, 
+                "max": 60,
+                "label": "Degrees C",
+                "bands": [
+                    { "color": "#ff0000", "from": -60, "to": -40},
+                    { "color": "#ff0000", "from": 40, "to": 60}
+                ]
+            }
+        },
+        {
+            "type": "temperature",
+            "name": "helium",
+            "graphDiv": "tempChart",
+            "onPopup": true,
+            "units": "Degrees C",
+            "niceName": "Helium Temperature",
+            "gaugeOptions" : {
+                "min": -60, 
+                "max": 60,
+                "label": "Degrees C",
+                "bands": [
+                    { "color": "#ff0000", "from": -60, "to": -40},
+                    { "color": "#ff0000", "from": 40, "to": 60}
+                ]
+            }
+        },
+        {
+            "type": "vspeed",
+            "name": "vspeed",
+            "graphDiv": "vspeedChart",
+            "onPopup": true,
+            "units": "Meters/Min",
+            "niceName": "Vertical Speed",
+            "gaugeOptions" : {
+                "min": -60, 
+                "max": 60,
+                "label": "Degrees C",
+                "bands": [
+                    { "color": "#ff0000", "from": -60, "to": -40},
+                    { "color": "#ff0000", "from": 40, "to": 60}
+                ]
+            }
+        },
+        {
+            "type": "altitude",
+            "name": "altitude",
+            "graphDiv": "altitudeChart",
+            "gaugeDiv": "altitudeGauge",
+            "onPopup": true,
+            "units": "Meters",
+            "niceName": "Altitude",
+            "gaugeOptions" : {
+                "min": 0, 
+                "max": 15000,
+                "label": "Meters",
+                "bands": [
+                    { "color": "#ff0000", "from": 0, "to": 8000},
+                    { "color": "#ff0000", "from": 12000, "to": 15000},
+                    { "color": "#00ff00", "from": 8000, "to": 12000}
+                ]
+            }
+        },
+        {
+            "type": "humidity",
+            "name": "humidity",
+            "graphDiv": "humidityChart",
+            "onPopup": true,
+            "units": "%",
+            "niceName": "Relative Humidity",
+            "gaugeOptions" : {
+                "min": -60, 
+                "max": 60,
+                "label": "Degrees C",
+                "bands": [
+                    { "color": "#ff0000", "from": -60, "to": -40},
+                    { "color": "#ff0000", "from": 40, "to": 60}
+                ]
+            }
+        },
+        {
+            "type": "pressure",
+            "name": "pressure",
+            "graphDiv": "pressureChart",
+            "onPopup": true,
+            "units": "kPa",
+            "niceName": "External Pressure",
+            "gaugeOptions" : {
+                "min": -60, 
+                "max": 60,
+                "label": "Degrees C",
+                "bands": [
+                    { "color": "#ff0000", "from": -60, "to": -40},
+                    { "color": "#ff0000", "from": 40, "to": 60}
+                ]
+            }
+        },
+
+{
+            "type": "speed",
+            "name": "speed",
+            "graphDiv": "speedChart",
+            "gaugeDiv": "groundSpeedGauge",
+            "onPopup": true,
+            "units": "Knots",
+            "niceName": "Groundspeed",
+            "gaugeOptions" : {
+                "min": 0, 
+                "max": 200,
+                "label": "Knots",
+                "bands": [
+                    { "color": "#ff0000", "from": 0, "to": 75}
+                ]
+            }
+        },
+
+{
+            "type": "cloud",
+            "name": "cloud",
+            "graphDiv": "cloudChart",
+            "onPopup": true,
+            "units": "",
+            "niceName": "Cloud Sensor Data",
+            "gaugeOptions" : {
+                "min": -60, 
+                "max": 60,
+                "label": "Degrees C",
+                "bands": [
+                    { "color": "#ff0000", "from": -60, "to": -40},
+                    { "color": "#ff0000", "from": 40, "to": 60}
+                ]
+            }
+        }
+
+    ]
+}

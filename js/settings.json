@@ -1,0 +1,87 @@
+{
+    "initialData" : "http://test3.whitestarballoon.com/data/init.gpx",
+    "hysplitData" : "",
+    "mapSettings" : {
+        "mapOptions" : {
+            "numZoomLevels": 16
+        },
+        "predictionStyle" : {
+            "strokeColor": "#FFFF00",
+            "strokeWidth": 4,
+            "strokeDashstyle": "solid"
+        },
+        "trackStyle" : {
+            "strokeColor": "#FFFF00",
+            "strokeWidth": 4,
+            "strokeDashstyle": "solid"
+        },
+        "pointStyleMap" : {
+            "default": {
+                "strokeColor": "#0080FF",
+                "fillColor": "#0080FF",
+                "pointRadius": 5
+            },
+            "select": {
+                "strokeColor": "#FF0000",
+                "fillColor": "#FF0000"
+            }
+        },
+        "lastPointStyle" : {
+            "externalGraphic": "img/lally.png",
+            "strokeColor": "#0080FF",
+            "fillColor": "#0080FF",
+            "pointRadius": 32
+        }
+    },
+    "defaultGraph": {
+        "chart": {
+            "defaultSeriesType": "spline",
+            "marginRight": 10
+        },
+        "rangeSelector": {
+            "buttons": [{
+                "type": "day",
+                "count": 2,
+                "text": "3d"
+            }, {
+                "type": "day",
+                "count": 1,
+                "text": "1d"  
+            }, {
+                "type": "minute",
+                "count": 720,
+                "text": "12h"
+            }, {
+                "type": "minute",
+                "count": 360,
+                "text": "6h"
+            },
+            {
+                "type": "all",
+                "text": "All"
+            }],
+            "selected": 4,
+            "inputEnabled": false
+        },
+        "xAxis": {
+            "type": "datetime",
+            "tickPixelInterval": 150
+        },
+        "yAxis": {
+            "title": {
+                "text": "Value"
+            },
+            "plotLines": [{
+                "value": 0,
+                "width": 1,
+                "color": "#808080"
+            }]
+        },
+        "legend": {
+            "enabled": false
+        },
+        "exporting": {
+            "enabled": false
+        }
+    }
+}
