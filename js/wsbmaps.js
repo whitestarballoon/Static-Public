@@ -200,6 +200,10 @@ WSBOUT.maps = (function (my) {
         lastPt = layers.points.features[layers.points.features.length - 1];
         lastPt.style = lastPointStyle;
         layers.points.redraw();
+
+        if (WSBOUT.panTo === true) {
+            map.setCenter(new OpenLayers.LonLat(lastPt.geometry.x, lastPt.geometry.y));
+        }
     };
 
     redrawTrack = function () {

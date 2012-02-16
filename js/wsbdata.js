@@ -9,6 +9,7 @@ var WSBOUT = (function (my) {
     var graph, gauge, panTo, init;
 
     panTo = true;
+    my.panTo = panTo;
 
     init = function () {
         $.getJSON("js/settings.json", function (data) {
