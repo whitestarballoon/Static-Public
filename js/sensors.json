@@ -157,6 +157,23 @@
                 ]
             }
         },
+        {
+            "type": "voltage",
+            "name": "volts",
+            "graphDiv": "voltageChart",
+            "onPopup": true,
+            "units": "Volts",
+            "niceName": "Battery Voltage"
+
+        },
+        {
+            "type": "ballast",
+            "name": "ballast",
+            "graphDiv": "ballastChart",
+            "onPopup": true,
+            "units": "Grams",
+            "niceName": "Ballast Remaining"
+        },
 
 {
             "type": "cloud",

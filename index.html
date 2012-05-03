@@ -21,6 +21,8 @@
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="theme/default/style.css">
+  <link rel="stylesheet" href="theme/default/google.css">
 
   <!-- Rather use `less.js` to dynamically compile your `stylesheet/less` files? -->
   <!--<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.1.3/less-1.1.3.min.js"></script>
@@ -39,6 +41,10 @@
   <script type="text/javascript" src="http://white-star-static-public.s3-website-us-east-1.amazonaws.com/js/jquery.livetwitter.min.js"></script>
   <script type="text/javascript" src="http://white-star-static-public.s3-website-us-east-1.amazonaws.com/js/jquery.gauge.min.js"></script>
 
+  <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?v=3.5&key=AIzaSyCrWMQXnVwudyYmxneViNjC43UehwMrXEU&sensor=false">
+    </script>
+
   <script type="text/javascript" src="js/jquery.doomTweaks.js"></script>
 
   <script type="text/javascript" src="js/wsbdata.js"></script>
@@ -50,7 +56,15 @@
   $(document).ready(function () {
     
     WSBOUT.init();
-    
+
+    $("#panTo").change(function () {
+      if ($(this).is(':checked')) {
+        WSBOUT.panTo = true;
+      } else {
+        WSBOUT.panTo = false;
+      }
+    });
+
     $("#tweets").liveTwitter('lvl1whitestar', 
       {mode: 'user_timeline', limit: 1, rate: 60000});
 
@@ -83,6 +97,11 @@
 
     <div class="container">
       <div class="content">
+      <div class="row">
+        <div class="span14">
+        <h1>Test Data! Check back later for the real stuff!</h1>
+        </div>
+      </div>  
         <div class="row tweets" style="margin-bottom: 10px">
           <div class="span1">
             <p style="margin-bottom: 0px">Tweets:</p>
@@ -97,19 +116,40 @@
           </div>
           <div class="span4">
             <div class="row">
-              <div class="span2">
+              <div class="span2" style="text-align: center;">
                 <canvas id="altitudeGauge" width="100" height="100"></canvas>
+                Altitude
               </div>
-              <div class="span2">
+              <div class="span2" style="text-align: center;">
                 <canvas id="externalTempGauge" width="100" height="100"></canvas>
+                External Temp
               </div>
             </div>
             <div class="row">
-              <div class="span2">
+              <div class="span2" style="text-align: center;">
                 <canvas id="groundSpeedGauge" width="100" height="100"></canvas>
+                Speed
               </div>
               <div class="span2">
-                
+                <a href="http://www.pubnub.com"><img src="img/powered-by-pubnub-200.png" width="100" height="41"></a>
+                <p style="font-size: 8px; line-height: normal; text-align: center;">Real Time Push Data Generously Provided by <a href="http://www.pubnub.com">PubNub</a></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="span4">
+                <h2>Tracker Options</h2>
+              </div>
+              <div class="span2">
+                <label class="checkbox">
+                  <input type="checkbox" id="panTo" name="panTo" value="1" checked>
+                  Pan to balloon?
+                </label>
+              </div>
+              <div class="span2">
+                <label class="checkbox">
+                  <input type="checkbox" id="cake" name="cake" value="1">
+                  Delicious cake?
+                </label>
               </div>
             </div>
           </div>
@@ -141,6 +181,14 @@
         <div class="row">
           <div class="span8">
             <div id="vspeedChart"></div>
+          </div>
+          <div class="span8">
+            <div id="voltageChart"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span8">
+            <div id="ballastChart"></div>
           </div>
           <div class="span8"></div>
         </div>

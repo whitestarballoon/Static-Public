@@ -37,6 +37,7 @@ WSBOUT.sensors = (function (my) {
             //create new graph
         } else {
             mySeries = myGraph.addSeries({id: "series" + that.name, name: that.name, data: []}, false);
+            mySeries.points = [];
         }
         //create new trace
 

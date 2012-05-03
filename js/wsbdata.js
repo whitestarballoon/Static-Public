@@ -30,6 +30,9 @@ var WSBOUT = (function (my) {
                     my.sensors.addData(displayData);
                     my.maps.add_from_gpx(data);
                 });
+                $.getJSON('/data/hysplit.json', function (data) {
+                    WSBOUT.maps.update_hysplit(data);
+                });
             });
         });
 
@@ -101,6 +104,10 @@ var WSBOUT = (function (my) {
                 dataType: "xml",
                 mimeType: "application/xml",
                 success: function (data, code) {
+                    var displayData, testGraph;
+                    displayData = my.parseForDisplay(data);
+                    my.sensors.addData(displayData);
+                    my.maps.add_from_gpx(data);
                 },
                 error: function () { $.l('failed ajax'); }
 
@@ -108,6 +115,14 @@ var WSBOUT = (function (my) {
             break;
         case "test":
             $.l(data);
+            break;
+        case "hysplit":
+            $.getJSON('/data/hysplit.json', function (data) {
+                WSBOUT.maps.update_hysplit(data);
+            });
+            break;
+        case "reload":
+            window.location.reload(true);
             break;
         }
     };

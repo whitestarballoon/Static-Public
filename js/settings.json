@@ -1,5 +1,5 @@
 {
-    "initialData" : "http://test3.whitestarballoon.com/data/init.gpx",
+    "initialData" : "http://track.whitestarballoon.com/data/init.gpx",
     "hysplitData" : "",
     "mapSettings" : {
         "mapOptions" : {
@@ -15,11 +15,27 @@
             "strokeWidth": 4,
             "strokeDashstyle": "solid"
         },
+        "hysplitStyle" : {
+            "strokeColor": "#FF00FF",
+            "strokeWidth": 3,
+            "strokeDashstyle": "longdash"
+        },
+        "hysplitPointStyleMap": {
+            "default": {
+                "strokeColor": "#0000FF",
+                "fillColor": "#0080FF",
+                "pointRadius": 2
+            },
+            "select": {
+                "strokeColor": "#FF00F0",
+                "fillColor": "#FF0000"
+            }
+        },
         "pointStyleMap" : {
             "default": {
                 "strokeColor": "#0080FF",
                 "fillColor": "#0080FF",
-                "pointRadius": 5
+                "pointRadius": 3
             },
             "select": {
                 "strokeColor": "#FF0000",
